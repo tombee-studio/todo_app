@@ -14,13 +14,13 @@ class TaskListPage extends ViewModelWidget<HomeScreenViewModel> {
     return SingleChildScrollView(
         child: Column(children: [
       ExpansionTile(
-          title: const Text("作業中のタスク"),
+          title: Text("作業中のタスク(${inProgressTasks.length})"),
           children: inProgressTasks
               .map((task) =>
                   TaskListItem(parentViewModel: parentViewModel, task: task))
               .toList()),
       ExpansionTile(
-          title: const Text("完了済み"),
+          title: Text("完了済み(${completedTasks.length})"),
           children: completedTasks
               .map((task) =>
                   TaskListItem(parentViewModel: parentViewModel, task: task))
