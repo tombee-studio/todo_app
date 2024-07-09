@@ -1,0 +1,1 @@
+enum TaskStatus { inProgress, complete }
