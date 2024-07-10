@@ -1,7 +1,6 @@
 import 'package:todo_app/bases/view_model_state.dart';
 import 'package:todo_app/data/account_data.dart';
 import 'package:todo_app/ui/account/view_model/account_screen_view_model.dart';
-import 'package:todo_app/ui/home/view/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -29,11 +28,8 @@ class AccountScreenState
         ),
         body: viewModel.body(context),
         floatingActionButton: FloatingActionButton(
-            onPressed: () => viewModel.addAccount().then((value) =>
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()))),
+            onPressed: () =>
+                viewModel.addAccount().then((value) => Navigator.pop(context)),
             child: const Icon(Icons.add)));
   }
 }
