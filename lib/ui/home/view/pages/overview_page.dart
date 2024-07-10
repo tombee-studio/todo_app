@@ -10,10 +10,17 @@ class OverviewPage extends ViewModelWidget<HomeScreenViewModel> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day + 1);
+    final beforeDay = DateTime(now.year, now.month, now.day);
     final deadlineTask = parentViewModel.model.tasks
         .where((task) => task.deadline.isBefore(today));
     final uncompletedTasks = deadlineTask.where((task) => !task.isCompleted);
-    final completedTasks = deadlineTask.where((task) => task.isCompleted);
+    final completedTasks = parentViewModel.model.tasks.where((task) {
+      final completedAt = task.completedAt;
+      if (completedAt == null) {
+        return false;
+      }
+      return completedAt.isBefore(today) && completedAt.isAfter(beforeDay);
+    });
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -34,8 +41,13 @@ class OverviewPage extends ViewModelWidget<HomeScreenViewModel> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      createRowItem(Icons.task, "全ての未完了のタスク",
-                                          parentViewModel.model.tasks.length)
+                                      createRowItem(
+                                          Icons.task,
+                                          "全ての未完了のタスク",
+                                          parentViewModel.model.tasks
+                                              .where(
+                                                  (task) => !task.isCompleted)
+                                              .length)
                                     ]),
                               ]))),
                   Theme(
@@ -55,8 +67,8 @@ class OverviewPage extends ViewModelWidget<HomeScreenViewModel> {
                                     .toList()),
                             ExpansionTile(
                                 initiallyExpanded: true,
-                                title: Text(
-                                    "今日完了したタスク(${uncompletedTasks.length})"),
+                                title:
+                                    Text("今日完了したタスク(${completedTasks.length})"),
                                 children: completedTasks
                                     .map((task) =>
                                         TaskListAbstractItem(task: task))
