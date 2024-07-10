@@ -244,10 +244,11 @@ class $DbTaskTableTable extends DbTaskTable
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _parentMeta = const VerificationMeta('parent');
+  static const VerificationMeta _projectMeta =
+      const VerificationMeta('project');
   @override
-  late final GeneratedColumn<int> parent = GeneratedColumn<int>(
-      'parent', aliasedName, true,
+  late final GeneratedColumn<int> project = GeneratedColumn<int>(
+      'project', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
@@ -273,7 +274,7 @@ class $DbTaskTableTable extends DbTaskTable
         account,
         name,
         description,
-        parent,
+        project,
         createdAt,
         deadline,
         completedAt
@@ -311,9 +312,9 @@ class $DbTaskTableTable extends DbTaskTable
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
-    if (data.containsKey('parent')) {
-      context.handle(_parentMeta,
-          parent.isAcceptableOrUnknown(data['parent']!, _parentMeta));
+    if (data.containsKey('project')) {
+      context.handle(_projectMeta,
+          project.isAcceptableOrUnknown(data['project']!, _projectMeta));
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -350,8 +351,8 @@ class $DbTaskTableTable extends DbTaskTable
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      parent: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}parent']),
+      project: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}project']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       deadline: attachedDatabase.typeMapping
@@ -372,7 +373,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
   final int account;
   final String name;
   final String description;
-  final int? parent;
+  final int? project;
   final DateTime createdAt;
   final DateTime deadline;
   final DateTime? completedAt;
@@ -381,7 +382,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
       required this.account,
       required this.name,
       required this.description,
-      this.parent,
+      this.project,
       required this.createdAt,
       required this.deadline,
       this.completedAt});
@@ -392,8 +393,8 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
     map['account'] = Variable<int>(account);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
-    if (!nullToAbsent || parent != null) {
-      map['parent'] = Variable<int>(parent);
+    if (!nullToAbsent || project != null) {
+      map['project'] = Variable<int>(project);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['deadline'] = Variable<DateTime>(deadline);
@@ -409,8 +410,9 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
       account: Value(account),
       name: Value(name),
       description: Value(description),
-      parent:
-          parent == null && nullToAbsent ? const Value.absent() : Value(parent),
+      project: project == null && nullToAbsent
+          ? const Value.absent()
+          : Value(project),
       createdAt: Value(createdAt),
       deadline: Value(deadline),
       completedAt: completedAt == null && nullToAbsent
@@ -427,7 +429,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
       account: serializer.fromJson<int>(json['account']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
-      parent: serializer.fromJson<int?>(json['parent']),
+      project: serializer.fromJson<int?>(json['project']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       deadline: serializer.fromJson<DateTime>(json['deadline']),
       completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
@@ -441,7 +443,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
       'account': serializer.toJson<int>(account),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
-      'parent': serializer.toJson<int?>(parent),
+      'project': serializer.toJson<int?>(project),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'deadline': serializer.toJson<DateTime>(deadline),
       'completedAt': serializer.toJson<DateTime?>(completedAt),
@@ -453,7 +455,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
           int? account,
           String? name,
           String? description,
-          Value<int?> parent = const Value.absent(),
+          Value<int?> project = const Value.absent(),
           DateTime? createdAt,
           DateTime? deadline,
           Value<DateTime?> completedAt = const Value.absent()}) =>
@@ -462,7 +464,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
         account: account ?? this.account,
         name: name ?? this.name,
         description: description ?? this.description,
-        parent: parent.present ? parent.value : this.parent,
+        project: project.present ? project.value : this.project,
         createdAt: createdAt ?? this.createdAt,
         deadline: deadline ?? this.deadline,
         completedAt: completedAt.present ? completedAt.value : this.completedAt,
@@ -474,7 +476,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
           ..write('account: $account, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
-          ..write('parent: $parent, ')
+          ..write('project: $project, ')
           ..write('createdAt: $createdAt, ')
           ..write('deadline: $deadline, ')
           ..write('completedAt: $completedAt')
@@ -483,8 +485,8 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, account, name, description, parent, createdAt, deadline, completedAt);
+  int get hashCode => Object.hash(id, account, name, description, project,
+      createdAt, deadline, completedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -493,7 +495,7 @@ class DbTaskTableData extends DataClass implements Insertable<DbTaskTableData> {
           other.account == this.account &&
           other.name == this.name &&
           other.description == this.description &&
-          other.parent == this.parent &&
+          other.project == this.project &&
           other.createdAt == this.createdAt &&
           other.deadline == this.deadline &&
           other.completedAt == this.completedAt);
@@ -504,7 +506,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
   final Value<int> account;
   final Value<String> name;
   final Value<String> description;
-  final Value<int?> parent;
+  final Value<int?> project;
   final Value<DateTime> createdAt;
   final Value<DateTime> deadline;
   final Value<DateTime?> completedAt;
@@ -513,7 +515,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
     this.account = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
-    this.parent = const Value.absent(),
+    this.project = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.deadline = const Value.absent(),
     this.completedAt = const Value.absent(),
@@ -523,7 +525,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
     required int account,
     required String name,
     required String description,
-    this.parent = const Value.absent(),
+    this.project = const Value.absent(),
     required DateTime createdAt,
     required DateTime deadline,
     this.completedAt = const Value.absent(),
@@ -537,7 +539,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
     Expression<int>? account,
     Expression<String>? name,
     Expression<String>? description,
-    Expression<int>? parent,
+    Expression<int>? project,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? deadline,
     Expression<DateTime>? completedAt,
@@ -547,7 +549,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
       if (account != null) 'account': account,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
-      if (parent != null) 'parent': parent,
+      if (project != null) 'project': project,
       if (createdAt != null) 'created_at': createdAt,
       if (deadline != null) 'deadline': deadline,
       if (completedAt != null) 'completed_at': completedAt,
@@ -559,7 +561,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
       Value<int>? account,
       Value<String>? name,
       Value<String>? description,
-      Value<int?>? parent,
+      Value<int?>? project,
       Value<DateTime>? createdAt,
       Value<DateTime>? deadline,
       Value<DateTime?>? completedAt}) {
@@ -568,7 +570,7 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
       account: account ?? this.account,
       name: name ?? this.name,
       description: description ?? this.description,
-      parent: parent ?? this.parent,
+      project: project ?? this.project,
       createdAt: createdAt ?? this.createdAt,
       deadline: deadline ?? this.deadline,
       completedAt: completedAt ?? this.completedAt,
@@ -590,8 +592,8 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
-    if (parent.present) {
-      map['parent'] = Variable<int>(parent.value);
+    if (project.present) {
+      map['project'] = Variable<int>(project.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -612,6 +614,370 @@ class DbTaskTableCompanion extends UpdateCompanion<DbTaskTableData> {
           ..write('account: $account, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('project: $project, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('deadline: $deadline, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DbProjectTableTable extends DbProjectTable
+    with TableInfo<$DbProjectTableTable, DbProjectTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DbProjectTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _accountMeta =
+      const VerificationMeta('account');
+  @override
+  late final GeneratedColumn<int> account = GeneratedColumn<int>(
+      'account', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _parentMeta = const VerificationMeta('parent');
+  @override
+  late final GeneratedColumn<int> parent = GeneratedColumn<int>(
+      'parent', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _deadlineMeta =
+      const VerificationMeta('deadline');
+  @override
+  late final GeneratedColumn<DateTime> deadline = GeneratedColumn<DateTime>(
+      'deadline', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _completedAtMeta =
+      const VerificationMeta('completedAt');
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+      'completed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, account, name, parent, createdAt, deadline, completedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'db_project_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<DbProjectTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('account')) {
+      context.handle(_accountMeta,
+          account.isAcceptableOrUnknown(data['account']!, _accountMeta));
+    } else if (isInserting) {
+      context.missing(_accountMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('parent')) {
+      context.handle(_parentMeta,
+          parent.isAcceptableOrUnknown(data['parent']!, _parentMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('deadline')) {
+      context.handle(_deadlineMeta,
+          deadline.isAcceptableOrUnknown(data['deadline']!, _deadlineMeta));
+    } else if (isInserting) {
+      context.missing(_deadlineMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+          _completedAtMeta,
+          completedAt.isAcceptableOrUnknown(
+              data['completed_at']!, _completedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DbProjectTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DbProjectTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      account: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}account'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      parent: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}parent']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      deadline: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deadline'])!,
+      completedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}completed_at']),
+    );
+  }
+
+  @override
+  $DbProjectTableTable createAlias(String alias) {
+    return $DbProjectTableTable(attachedDatabase, alias);
+  }
+}
+
+class DbProjectTableData extends DataClass
+    implements Insertable<DbProjectTableData> {
+  final int id;
+  final int account;
+  final String name;
+  final int? parent;
+  final DateTime createdAt;
+  final DateTime deadline;
+  final DateTime? completedAt;
+  const DbProjectTableData(
+      {required this.id,
+      required this.account,
+      required this.name,
+      this.parent,
+      required this.createdAt,
+      required this.deadline,
+      this.completedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['account'] = Variable<int>(account);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || parent != null) {
+      map['parent'] = Variable<int>(parent);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['deadline'] = Variable<DateTime>(deadline);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    return map;
+  }
+
+  DbProjectTableCompanion toCompanion(bool nullToAbsent) {
+    return DbProjectTableCompanion(
+      id: Value(id),
+      account: Value(account),
+      name: Value(name),
+      parent:
+          parent == null && nullToAbsent ? const Value.absent() : Value(parent),
+      createdAt: Value(createdAt),
+      deadline: Value(deadline),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+    );
+  }
+
+  factory DbProjectTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DbProjectTableData(
+      id: serializer.fromJson<int>(json['id']),
+      account: serializer.fromJson<int>(json['account']),
+      name: serializer.fromJson<String>(json['name']),
+      parent: serializer.fromJson<int?>(json['parent']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      deadline: serializer.fromJson<DateTime>(json['deadline']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'account': serializer.toJson<int>(account),
+      'name': serializer.toJson<String>(name),
+      'parent': serializer.toJson<int?>(parent),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'deadline': serializer.toJson<DateTime>(deadline),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+    };
+  }
+
+  DbProjectTableData copyWith(
+          {int? id,
+          int? account,
+          String? name,
+          Value<int?> parent = const Value.absent(),
+          DateTime? createdAt,
+          DateTime? deadline,
+          Value<DateTime?> completedAt = const Value.absent()}) =>
+      DbProjectTableData(
+        id: id ?? this.id,
+        account: account ?? this.account,
+        name: name ?? this.name,
+        parent: parent.present ? parent.value : this.parent,
+        createdAt: createdAt ?? this.createdAt,
+        deadline: deadline ?? this.deadline,
+        completedAt: completedAt.present ? completedAt.value : this.completedAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('DbProjectTableData(')
+          ..write('id: $id, ')
+          ..write('account: $account, ')
+          ..write('name: $name, ')
+          ..write('parent: $parent, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('deadline: $deadline, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, account, name, parent, createdAt, deadline, completedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DbProjectTableData &&
+          other.id == this.id &&
+          other.account == this.account &&
+          other.name == this.name &&
+          other.parent == this.parent &&
+          other.createdAt == this.createdAt &&
+          other.deadline == this.deadline &&
+          other.completedAt == this.completedAt);
+}
+
+class DbProjectTableCompanion extends UpdateCompanion<DbProjectTableData> {
+  final Value<int> id;
+  final Value<int> account;
+  final Value<String> name;
+  final Value<int?> parent;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> deadline;
+  final Value<DateTime?> completedAt;
+  const DbProjectTableCompanion({
+    this.id = const Value.absent(),
+    this.account = const Value.absent(),
+    this.name = const Value.absent(),
+    this.parent = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.deadline = const Value.absent(),
+    this.completedAt = const Value.absent(),
+  });
+  DbProjectTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int account,
+    required String name,
+    this.parent = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime deadline,
+    this.completedAt = const Value.absent(),
+  })  : account = Value(account),
+        name = Value(name),
+        createdAt = Value(createdAt),
+        deadline = Value(deadline);
+  static Insertable<DbProjectTableData> custom({
+    Expression<int>? id,
+    Expression<int>? account,
+    Expression<String>? name,
+    Expression<int>? parent,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? deadline,
+    Expression<DateTime>? completedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (account != null) 'account': account,
+      if (name != null) 'name': name,
+      if (parent != null) 'parent': parent,
+      if (createdAt != null) 'created_at': createdAt,
+      if (deadline != null) 'deadline': deadline,
+      if (completedAt != null) 'completed_at': completedAt,
+    });
+  }
+
+  DbProjectTableCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? account,
+      Value<String>? name,
+      Value<int?>? parent,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? deadline,
+      Value<DateTime?>? completedAt}) {
+    return DbProjectTableCompanion(
+      id: id ?? this.id,
+      account: account ?? this.account,
+      name: name ?? this.name,
+      parent: parent ?? this.parent,
+      createdAt: createdAt ?? this.createdAt,
+      deadline: deadline ?? this.deadline,
+      completedAt: completedAt ?? this.completedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (account.present) {
+      map['account'] = Variable<int>(account.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (parent.present) {
+      map['parent'] = Variable<int>(parent.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (deadline.present) {
+      map['deadline'] = Variable<DateTime>(deadline.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DbProjectTableCompanion(')
+          ..write('id: $id, ')
+          ..write('account: $account, ')
+          ..write('name: $name, ')
           ..write('parent: $parent, ')
           ..write('createdAt: $createdAt, ')
           ..write('deadline: $deadline, ')
@@ -626,12 +992,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
   late final $DbAccountTableTable dbAccountTable = $DbAccountTableTable(this);
   late final $DbTaskTableTable dbTaskTable = $DbTaskTableTable(this);
+  late final $DbProjectTableTable dbProjectTable = $DbProjectTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [dbAccountTable, dbTaskTable];
+      [dbAccountTable, dbTaskTable, dbProjectTable];
 }
 
 typedef $$DbAccountTableTableInsertCompanionBuilder = DbAccountTableCompanion
@@ -746,7 +1113,7 @@ typedef $$DbTaskTableTableInsertCompanionBuilder = DbTaskTableCompanion
   required int account,
   required String name,
   required String description,
-  Value<int?> parent,
+  Value<int?> project,
   required DateTime createdAt,
   required DateTime deadline,
   Value<DateTime?> completedAt,
@@ -757,7 +1124,7 @@ typedef $$DbTaskTableTableUpdateCompanionBuilder = DbTaskTableCompanion
   Value<int> account,
   Value<String> name,
   Value<String> description,
-  Value<int?> parent,
+  Value<int?> project,
   Value<DateTime> createdAt,
   Value<DateTime> deadline,
   Value<DateTime?> completedAt,
@@ -787,7 +1154,7 @@ class $$DbTaskTableTableTableManager extends RootTableManager<
             Value<int> account = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> description = const Value.absent(),
-            Value<int?> parent = const Value.absent(),
+            Value<int?> project = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> deadline = const Value.absent(),
             Value<DateTime?> completedAt = const Value.absent(),
@@ -797,7 +1164,7 @@ class $$DbTaskTableTableTableManager extends RootTableManager<
             account: account,
             name: name,
             description: description,
-            parent: parent,
+            project: project,
             createdAt: createdAt,
             deadline: deadline,
             completedAt: completedAt,
@@ -807,7 +1174,7 @@ class $$DbTaskTableTableTableManager extends RootTableManager<
             required int account,
             required String name,
             required String description,
-            Value<int?> parent = const Value.absent(),
+            Value<int?> project = const Value.absent(),
             required DateTime createdAt,
             required DateTime deadline,
             Value<DateTime?> completedAt = const Value.absent(),
@@ -817,7 +1184,7 @@ class $$DbTaskTableTableTableManager extends RootTableManager<
             account: account,
             name: name,
             description: description,
-            parent: parent,
+            project: project,
             createdAt: createdAt,
             deadline: deadline,
             completedAt: completedAt,
@@ -860,8 +1227,8 @@ class $$DbTaskTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get parent => $state.composableBuilder(
-      column: $state.table.parent,
+  ColumnFilters<int> get project => $state.composableBuilder(
+      column: $state.table.project,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -904,6 +1271,176 @@ class $$DbTaskTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<int> get project => $state.composableBuilder(
+      column: $state.table.project,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get deadline => $state.composableBuilder(
+      column: $state.table.deadline,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get completedAt => $state.composableBuilder(
+      column: $state.table.completedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$DbProjectTableTableInsertCompanionBuilder = DbProjectTableCompanion
+    Function({
+  Value<int> id,
+  required int account,
+  required String name,
+  Value<int?> parent,
+  required DateTime createdAt,
+  required DateTime deadline,
+  Value<DateTime?> completedAt,
+});
+typedef $$DbProjectTableTableUpdateCompanionBuilder = DbProjectTableCompanion
+    Function({
+  Value<int> id,
+  Value<int> account,
+  Value<String> name,
+  Value<int?> parent,
+  Value<DateTime> createdAt,
+  Value<DateTime> deadline,
+  Value<DateTime?> completedAt,
+});
+
+class $$DbProjectTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DbProjectTableTable,
+    DbProjectTableData,
+    $$DbProjectTableTableFilterComposer,
+    $$DbProjectTableTableOrderingComposer,
+    $$DbProjectTableTableProcessedTableManager,
+    $$DbProjectTableTableInsertCompanionBuilder,
+    $$DbProjectTableTableUpdateCompanionBuilder> {
+  $$DbProjectTableTableTableManager(
+      _$AppDatabase db, $DbProjectTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$DbProjectTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$DbProjectTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$DbProjectTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<int> account = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int?> parent = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> deadline = const Value.absent(),
+            Value<DateTime?> completedAt = const Value.absent(),
+          }) =>
+              DbProjectTableCompanion(
+            id: id,
+            account: account,
+            name: name,
+            parent: parent,
+            createdAt: createdAt,
+            deadline: deadline,
+            completedAt: completedAt,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required int account,
+            required String name,
+            Value<int?> parent = const Value.absent(),
+            required DateTime createdAt,
+            required DateTime deadline,
+            Value<DateTime?> completedAt = const Value.absent(),
+          }) =>
+              DbProjectTableCompanion.insert(
+            id: id,
+            account: account,
+            name: name,
+            parent: parent,
+            createdAt: createdAt,
+            deadline: deadline,
+            completedAt: completedAt,
+          ),
+        ));
+}
+
+class $$DbProjectTableTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $DbProjectTableTable,
+    DbProjectTableData,
+    $$DbProjectTableTableFilterComposer,
+    $$DbProjectTableTableOrderingComposer,
+    $$DbProjectTableTableProcessedTableManager,
+    $$DbProjectTableTableInsertCompanionBuilder,
+    $$DbProjectTableTableUpdateCompanionBuilder> {
+  $$DbProjectTableTableProcessedTableManager(super.$state);
+}
+
+class $$DbProjectTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $DbProjectTableTable> {
+  $$DbProjectTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get account => $state.composableBuilder(
+      column: $state.table.account,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get parent => $state.composableBuilder(
+      column: $state.table.parent,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get deadline => $state.composableBuilder(
+      column: $state.table.deadline,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get completedAt => $state.composableBuilder(
+      column: $state.table.completedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$DbProjectTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $DbProjectTableTable> {
+  $$DbProjectTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get account => $state.composableBuilder(
+      column: $state.table.account,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<int> get parent => $state.composableBuilder(
       column: $state.table.parent,
       builder: (column, joinBuilders) =>
@@ -932,4 +1469,6 @@ class _$AppDatabaseManager {
       $$DbAccountTableTableTableManager(_db, _db.dbAccountTable);
   $$DbTaskTableTableTableManager get dbTaskTable =>
       $$DbTaskTableTableTableManager(_db, _db.dbTaskTable);
+  $$DbProjectTableTableTableManager get dbProjectTable =>
+      $$DbProjectTableTableTableManager(_db, _db.dbProjectTable);
 }

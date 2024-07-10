@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:todo_app/bases/crud_factory.dart';
 import 'package:todo_app/data/account_data.dart';
+import 'package:todo_app/data/project_data.dart';
 import 'package:todo_app/data/task_data.dart';
 import 'package:todo_app/database/app_database.dart';
 import 'package:todo_app/factory/interface/task_crud_interface.dart';
@@ -31,17 +32,26 @@ class TaskFactory extends CrudFactory<TaskData, DbTaskTableCompanion>
           ..where((tbl) => tbl.id.equals(id)))
         .join([
       innerJoin(db.dbAccountTable,
-          db.dbAccountTable.id.equalsExp(db.dbTaskTable.account))
+          db.dbAccountTable.id.equalsExp(db.dbTaskTable.account)),
+      innerJoin(db.dbProjectTable,
+          db.dbProjectTable.id.equalsExp(db.dbTaskTable.project))
     ]).getSingle();
+
     final dbAccount = row.readTable(db.dbAccountTable);
     final dbTask = row.readTable(db.dbTaskTable);
+    final dbProject = row.readTable(db.dbProjectTable);
     return TaskData(
         dbTask.id,
         AccountData(dbAccount.id, dbAccount.name, dbAccount.purpose),
         dbTask.name,
         dbTask.description,
-        null,
-        [],
+        ProjectData(
+            dbProject.id,
+            AccountData(dbAccount.id, dbAccount.name, dbAccount.purpose),
+            dbProject.name,
+            dbProject.createdAt,
+            dbProject.deadline,
+            dbProject.completedAt),
         dbTask.createdAt,
         dbTask.deadline,
         dbTask.completedAt);
@@ -64,7 +74,6 @@ class TaskFactory extends CrudFactory<TaskData, DbTaskTableCompanion>
           dbTask.name,
           dbTask.description,
           null,
-          [],
           dbTask.createdAt,
           dbTask.deadline,
           dbTask.completedAt);

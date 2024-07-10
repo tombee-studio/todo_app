@@ -1,33 +1,30 @@
 import 'package:todo_app/bases/view_model_state.dart';
 import 'package:todo_app/data/account_data.dart';
 import 'package:todo_app/data/project_data.dart';
-import 'package:todo_app/data/task_data.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/ui/task/view_model/task_screen_view_model.dart';
+import 'package:todo_app/ui/project/view_model/project_screen_view_model.dart';
 
-class TaskScreen extends StatefulWidget {
+class ProjectScreen extends StatefulWidget {
   final AccountData account;
-  final List<ProjectData> projects;
-  final TaskData? initial;
+  final ProjectData? initial;
 
-  const TaskScreen(
-      {super.key, required this.account, required this.projects, this.initial});
+  const ProjectScreen({super.key, required this.account, this.initial});
 
   @override
   State<StatefulWidget> createState() => TaskScreenState();
 }
 
-class TaskScreenState extends ViewModelState<TaskScreen, TaskScreenViewModel> {
+class TaskScreenState
+    extends ViewModelState<ProjectScreen, ProjectScreenViewModel> {
   @override
-  TaskScreenViewModel createViewModel() =>
-      TaskScreenViewModel(this, widget.account, widget.projects,
-          initial: widget.initial);
+  ProjectScreenViewModel createViewModel() =>
+      ProjectScreenViewModel(this, widget.account, initial: widget.initial);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("タスクを追加"),
+          title: const Text("プロジェクトを追加"),
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           foregroundColor: Theme.of(context).colorScheme.primary,
         ),

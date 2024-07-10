@@ -2,6 +2,7 @@ import 'package:todo_app/bases/list_property.dart';
 import 'package:todo_app/bases/model.dart';
 import 'package:todo_app/bases/property.dart';
 import 'package:todo_app/data/account_data.dart';
+import 'package:todo_app/data/project_data.dart';
 import 'package:todo_app/data/task_data.dart';
 import 'package:todo_app/enum/home_screen_state.dart';
 import 'package:todo_app/exception/not_created_account_error.dart';
@@ -13,10 +14,13 @@ class HomeScreenModel extends Model<HomeScreenRepository> {
   late Property<HomeScreenState> _currentState;
   late ListProperty<AccountData> _accounts;
   late ListProperty<TaskData> _tasks;
+  late ListProperty<ProjectData> _projects;
 
   bool get isLoading => _isLoading.value;
   List<AccountData> get accounts => _accounts.value;
   AccountData get currentAccount => accounts[currentAccountIndex];
+
+  List<ProjectData> get projects => _projects.value;
 
   List<TaskData> get tasks => _tasks.value;
 
@@ -36,6 +40,7 @@ class HomeScreenModel extends Model<HomeScreenRepository> {
     _currentAccountIndex = propertyOf(0);
     _accounts = listPropertyOf(<AccountData>[]);
     _tasks = listPropertyOf(<TaskData>[]);
+    _projects = listPropertyOf(<ProjectData>[]);
   }
 
   Future load() async {
@@ -45,6 +50,7 @@ class HomeScreenModel extends Model<HomeScreenRepository> {
       throw NotCreatedAccountError();
     }
     _tasks.value = await repository.fetchTasks(currentAccount);
+    _projects.value = await repository.fetchProjects(currentAccount);
     _isLoading.value = false;
   }
 
@@ -59,5 +65,18 @@ class HomeScreenModel extends Model<HomeScreenRepository> {
 
   Future deleteTask(TaskData task) async {
     await repository.deleteTask(task);
+  }
+
+  Future toggleProjectStatus(ProjectData project, DateTime? completedAt) async {
+    await repository.updateProjectStatus(project, completedAt);
+    await updateProjects();
+  }
+
+  Future updateProjects() async {
+    _projects.value = await repository.fetchProjects(currentAccount);
+  }
+
+  Future deleteProject(ProjectData project) async {
+    await repository.deleteProject(project);
   }
 }

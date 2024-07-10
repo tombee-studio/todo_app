@@ -9,13 +9,14 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 import 'package:drift/drift.dart';
 import 'package:todo_app/database/data/db_account_table.dart';
+import 'package:todo_app/database/data/db_project_table.dart';
 import 'package:todo_app/database/data/db_task_table.dart';
 
 part 'app_database.g.dart';
 
 final databaseProvider = Provider<QueryExecutor>(_openConnection);
 
-@DriftDatabase(tables: [DbAccountTable, DbTaskTable])
+@DriftDatabase(tables: [DbAccountTable, DbTaskTable, DbProjectTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._(QueryExecutor e) : super(e);
 

@@ -5,15 +5,12 @@ import 'package:todo_app/bases/view_model.dart';
 import 'package:todo_app/common/providers.dart';
 import 'package:todo_app/data/account_data.dart';
 import 'package:todo_app/data/project_data.dart';
-import 'package:todo_app/data/task_data.dart';
-import 'package:todo_app/model/task_screen_model.dart';
+import 'package:todo_app/model/project_screen_model.dart';
 
-class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
-  final List<ProjectData> projects;
+class ProjectScreenViewModel extends ViewModel<ProjectScreenModel> {
   final AccountData account;
-  final TaskData? initial;
-  TaskScreenViewModel(super.notifier, this.account, this.projects,
-      {this.initial});
+  final ProjectData? initial;
+  ProjectScreenViewModel(super.notifier, this.account, {this.initial});
 
   Icon get buttonIcon {
     if (initial == null) {
@@ -24,9 +21,8 @@ class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
   }
 
   @override
-  TaskScreenModel createModel(Notifier notifier) =>
-      TaskScreenModel(notifier, taskScreenRepositoryProvider, account,
-          initial: initial);
+  ProjectScreenModel createModel(Notifier notifier) => ProjectScreenModel(
+      initial, account, notifier, projectScreenRepositoryProvider);
 
   Widget content(BuildContext context) {
     return Padding(
@@ -34,31 +30,22 @@ class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           const Icon(Icons.person),
           name(context),
-          purpose(context),
           deadline(context),
-          completedAt(context),
-          project(context)
+          completedAt(context)
         ]));
   }
 
   Widget name(BuildContext context) {
     return TextFormField(
-        decoration: const InputDecoration(label: Text("タスク名")),
+        decoration: const InputDecoration(label: Text("プロジェクト名")),
         initialValue: model.name,
         onChanged: (value) => model.name = value);
-  }
-
-  Widget purpose(BuildContext context) {
-    return TextFormField(
-        decoration: const InputDecoration(label: Text("説明")),
-        initialValue: model.description,
-        onChanged: (value) => model.description = value);
   }
 
   Widget deadline(BuildContext context) {
     return DateTimeFormField(
         mode: DateTimeFieldPickerMode.date,
-        decoration: const InputDecoration(label: Text("締め切り日時")),
+        decoration: const InputDecoration(label: Text("完了予定日")),
         initialValue: model.deadline,
         onChanged: (value) {
           if (value != null) {
@@ -79,20 +66,6 @@ class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
         });
   }
 
-  Widget project(BuildContext context) {
-    return DropdownButtonFormField<ProjectData>(
-        items: projects
-            .map((item) => DropdownMenuItem<ProjectData>(
-                value: item, child: Text(item.name)))
-            .toList(),
-        decoration: const InputDecoration(label: Text("プロジェクト")),
-        onChanged: (value) {
-          if (value != null) {
-            model.project = value;
-          }
-        });
-  }
-
   Widget body(BuildContext context) {
     final size = MediaQuery.of(context).size;
     if (size.width >= 641) {
@@ -102,7 +75,7 @@ class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
     }
   }
 
-  Future<TaskData> handleData() async {
+  Future<ProjectData> handleData() async {
     if (model.initial == null) {
       return await model.create();
     } else {

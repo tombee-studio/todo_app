@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/bases/notifier.dart';
 import 'package:todo_app/bases/view_model.dart';
 import 'package:todo_app/common/providers.dart';
+import 'package:todo_app/data/project_data.dart';
 import 'package:todo_app/data/task_data.dart';
 import 'package:todo_app/enum/home_screen_state.dart';
 import 'package:todo_app/exception/not_created_account_error.dart';
-import 'package:todo_app/model/home/home_screen_model.dart';
+import 'package:todo_app/model/home_screen_model.dart';
 import 'package:todo_app/ui/account/view/component/account_list_drawer.dart';
 import 'package:todo_app/ui/account/view/screen/account_screen.dart';
 import 'package:todo_app/ui/home/view/pages/overview_page.dart';
 import 'package:todo_app/ui/home/view/pages/settings_page.dart';
 import 'package:todo_app/ui/home/view/pages/task_list_page.dart';
+import 'package:todo_app/ui/project/view/screen/project_screen.dart';
 import 'package:todo_app/ui/task/view/screen/task_screen.dart';
 
 class HomeScreenViewModel extends ViewModel<HomeScreenModel> {
@@ -32,8 +34,24 @@ class HomeScreenViewModel extends ViewModel<HomeScreenModel> {
               IconButton(
                   onPressed: () async {
                     await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => TaskScreen(
+                            account: model.currentAccount,
+                            projects: model.projects)));
+                    await model.load();
+                  },
+                  icon: const Icon(Icons.add))
+            ]);
+      case HomeScreenState.settings:
+        return AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.primary,
+            title: Text(title),
+            actions: [
+              IconButton(
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            TaskScreen(account: model.currentAccount)));
+                            ProjectScreen(account: model.currentAccount)));
                     await model.load();
                   },
                   icon: const Icon(Icons.add))
@@ -114,13 +132,33 @@ class HomeScreenViewModel extends ViewModel<HomeScreenModel> {
 
   void openTaskScreen(BuildContext context, TaskData task) async {
     await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            TaskScreen(account: model.currentAccount, initial: task)));
+        builder: (context) => TaskScreen(
+            account: model.currentAccount,
+            projects: model.projects,
+            initial: task)));
     await model.updateTasks();
   }
 
   void deleteTask(TaskData task) async {
     await model.deleteTask(task);
+    await model.updateTasks();
+  }
+
+  void toggleProjectStatus(ProjectData project) {
+    final completedAt = project.completedAt == null ? DateTime.now() : null;
+    model.toggleProjectStatus(project, completedAt);
+  }
+
+  void openProjectScreen(BuildContext context, ProjectData project) async {
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            ProjectScreen(account: model.currentAccount, initial: project)));
+    await model.updateProjects();
+  }
+
+  void deleteProject(ProjectData project) async {
+    await model.deleteProject(project);
+    await model.updateProjects();
     await model.updateTasks();
   }
 }
