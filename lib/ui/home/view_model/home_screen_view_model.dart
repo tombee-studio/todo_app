@@ -99,8 +99,10 @@ class HomeScreenViewModel extends ViewModel<HomeScreenModel> {
   void didChangeDependencies(BuildContext context) {
     launch(context).catchError((ex) {
       if (ex is NotCreatedAccountError) {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AccountScreen()));
+        Navigator.of(context)
+            .push(
+                MaterialPageRoute(builder: (context) => const AccountScreen()))
+            .then((value) => launch(context));
       }
     });
   }
