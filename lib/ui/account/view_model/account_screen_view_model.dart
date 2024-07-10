@@ -2,7 +2,7 @@ import 'package:todo_app/bases/notifier.dart';
 import 'package:todo_app/bases/view_model.dart';
 import 'package:todo_app/common/providers.dart';
 import 'package:todo_app/data/account_data.dart';
-import 'package:todo_app/model/account/account_screen_model.dart';
+import 'package:todo_app/model/account_screen_model.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreenViewModel extends ViewModel<AccountScreenModel> {
