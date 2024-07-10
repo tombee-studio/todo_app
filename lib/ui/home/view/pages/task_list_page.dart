@@ -12,21 +12,23 @@ class TaskListPage extends ViewModelWidget<HomeScreenViewModel> {
     final inProgressTasks = tasks.where((task) => !task.isCompleted);
     final completedTasks = tasks.where((task) => task.isCompleted);
     return SingleChildScrollView(
-        child: Column(children: [
-      ExpansionTile(
-          initiallyExpanded: true,
-          title: Text("作業中のタスク(${inProgressTasks.length})"),
-          children: inProgressTasks
-              .map((task) =>
-                  TaskListItem(parentViewModel: parentViewModel, task: task))
-              .toList()),
-      ExpansionTile(
-          initiallyExpanded: true,
-          title: Text("完了済み(${completedTasks.length})"),
-          children: completedTasks
-              .map((task) =>
-                  TaskListItem(parentViewModel: parentViewModel, task: task))
-              .toList())
-    ]));
+        child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: Column(children: [
+              ExpansionTile(
+                  initiallyExpanded: false,
+                  title: Text("完了済み(${completedTasks.length})"),
+                  children: completedTasks
+                      .map((task) => TaskListItem(
+                          parentViewModel: parentViewModel, task: task))
+                      .toList()),
+              ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Text("作業中のタスク(${inProgressTasks.length})"),
+                  children: inProgressTasks
+                      .map((task) => TaskListItem(
+                          parentViewModel: parentViewModel, task: task))
+                      .toList())
+            ])));
   }
 }
