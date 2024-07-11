@@ -27,7 +27,6 @@ class HomeScreenModel extends Model<HomeScreenRepository> {
   int get currentAccountIndex => _currentAccountIndex.value;
   set currentAccountIndex(int value) {
     _currentAccountIndex.value = value;
-
     load();
   }
 
