@@ -63,17 +63,26 @@ class TaskFactory extends CrudFactory<TaskData, DbTaskTableCompanion>
           ..where((tbl) => tbl.account.equals(account.id)))
         .join([
       innerJoin(db.dbAccountTable,
-          db.dbAccountTable.id.equalsExp(db.dbTaskTable.account))
+          db.dbAccountTable.id.equalsExp(db.dbTaskTable.account)),
+      innerJoin(db.dbProjectTable,
+          db.dbProjectTable.id.equalsExp(db.dbTaskTable.project))
     ]).get();
     return rows.map((row) {
       final dbAccount = row.readTable(db.dbAccountTable);
       final dbTask = row.readTable(db.dbTaskTable);
+      final dbProject = row.readTable(db.dbProjectTable);
       return TaskData(
           dbTask.id,
           AccountData(dbAccount.id, dbAccount.name, dbAccount.purpose),
           dbTask.name,
           dbTask.description,
-          null,
+          ProjectData(
+              dbProject.id,
+              AccountData(dbAccount.id, dbAccount.name, dbAccount.purpose),
+              dbProject.name,
+              dbProject.createdAt,
+              dbProject.deadline,
+              dbProject.completedAt),
           dbTask.createdAt,
           dbTask.deadline,
           dbTask.completedAt);
