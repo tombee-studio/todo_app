@@ -1,7 +1,8 @@
+import 'package:todo_app/bases/value_object.dart';
 import 'package:todo_app/data/account_data.dart';
 import 'package:todo_app/data/project_data.dart';
 
-class TaskData {
+class TaskData extends ValueObject<TaskData> {
   final int id;
   final AccountData account;
   final String name;
@@ -15,4 +16,7 @@ class TaskData {
       this.createdAt, this.deadline, this.completedAt);
 
   bool get isCompleted => completedAt != null;
+
+  @override
+  int get identifier => id;
 }
