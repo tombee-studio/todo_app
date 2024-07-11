@@ -52,7 +52,9 @@ class ProjectFactory extends CrudFactory<ProjectData, DbProjectTableCompanion>
   @override
   Future<List<ProjectData>> fetchList(
       AppDatabase db, AccountData account) async {
-    final rows = await (db.select(db.dbProjectTable)).join([
+    final rows = await (db.select(db.dbProjectTable)
+          ..where((tbl) => tbl.account.equals(account.id)))
+        .join([
       innerJoin(db.dbAccountTable,
           db.dbAccountTable.id.equalsExp(db.dbProjectTable.account))
     ]).get();
