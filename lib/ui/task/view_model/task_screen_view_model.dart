@@ -81,6 +81,7 @@ class TaskScreenViewModel extends ViewModel<TaskScreenModel> {
 
   Widget project(BuildContext context) {
     return DropdownButtonFormField<ProjectData>(
+        value: model.project,
         items: projects
             .map((item) => DropdownMenuItem<ProjectData>(
                 value: item, child: Text(item.name)))
