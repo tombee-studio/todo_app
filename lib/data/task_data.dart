@@ -18,5 +18,5 @@ class TaskData extends ValueObject<TaskData> {
   bool get isCompleted => completedAt != null;
 
   @override
-  int get identifier => id;
+  int get valueId => id;
 }

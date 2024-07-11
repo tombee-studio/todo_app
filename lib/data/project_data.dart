@@ -13,5 +13,5 @@ class ProjectData extends ValueObject<ProjectData> {
       this.completedAt);
 
   @override
-  int get identifier => id;
+  int get valueId => id;
 }

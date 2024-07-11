@@ -1,15 +1,15 @@
 abstract class ValueObject<T> {
-  int get identifier;
+  int get valueId;
 
   @override
   bool operator ==(Object other) {
-    final project = other as T?;
-    if (project == null) {
+    final obj = other as T?;
+    if (obj == null) {
       return false;
     }
-    return hashCode == project.hashCode;
+    return hashCode == obj.hashCode;
   }
 
   @override
-  int get hashCode => identifier;
+  int get hashCode => valueId;
 }

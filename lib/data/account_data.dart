@@ -8,5 +8,5 @@ class AccountData extends ValueObject<AccountData> {
   AccountData(this.id, this.name, this.purose);
 
   @override
-  int get identifier => id;
+  int get valueId => id;
 }
